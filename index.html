@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retail Business KPI Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Arial,sans-serif;background:#f4f7fb;color:#172033}
+.header{background:linear-gradient(135deg,#0b2e59,#1464b4);color:white;padding:28px 7%}
+.header h1{margin:0 0 7px;font-size:30px} .header p{margin:0;opacity:.85}
+.container{max-width:1200px;margin:28px auto;padding:0 20px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.card{background:white;border-radius:16px;padding:20px;box-shadow:0 6px 22px rgba(20,45,80,.08)}
+.label{font-size:13px;color:#65748b;margin-bottom:9px} .value{font-size:27px;font-weight:800}
+.sub{font-size:12px;color:#718096;margin-top:7px}
+.charts{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:18px}
+.chartbox{background:white;border-radius:16px;padding:20px;box-shadow:0 6px 22px rgba(20,45,80,.08);height:390px}
+.chartbox h2{font-size:17px;margin:0 0 15px}
+.footer{text-align:center;color:#718096;font-size:12px;padding:25px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}
+@media(max-width:500px){.grid{grid-template-columns:1fr}.header h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <h1>Retail Business KPI Dashboard</h1>
+  <p>Sales performance, customer metrics and business trends</p>
+</header>
+<main class="container">
+<section class="grid">
+  <div class="card"><div class="label">TOTAL SALES</div><div class="value">₹3,202,994</div><div class="sub">Revenue generated</div></div>
+  <div class="card"><div class="label">TOTAL ORDERS</div><div class="value">120</div><div class="sub">Unique orders</div></div>
+  <div class="card"><div class="label">AVERAGE ORDER VALUE</div><div class="value">₹26,692</div><div class="sub">Sales per order</div></div>
+  <div class="card"><div class="label">AVERAGE RATING</div><div class="value">3.75 / 5</div><div class="sub">Customer satisfaction</div></div>
+</section>
+
+<section class="grid">
+  <div class="card"><div class="label">TOP CATEGORY</div><div class="value" style="font-size:22px">Electronics</div><div class="sub">Highest revenue category</div></div>
+  <div class="card"><div class="label">TOP CITY</div><div class="value" style="font-size:22px">Nagpur</div><div class="sub">Highest revenue location</div></div>
+  <div class="card"><div class="label">TOTAL QUANTITY</div><div class="value">379</div><div class="sub">Units sold</div></div>
+  <div class="card"><div class="label">DATASET SIZE</div><div class="value">120</div><div class="sub">Retail transactions</div></div>
+</section>
+
+<section class="charts">
+  <div class="chartbox"><h2>Monthly Sales Trend</h2><canvas id="monthly"></canvas></div>
+  <div class="chartbox"><h2>Sales by Category</h2><canvas id="category"></canvas></div>
+</section>
+<section class="charts">
+  <div class="chartbox"><h2>Sales by City</h2><canvas id="city"></canvas></div>
+  <div class="chartbox"><h2>Business Highlights</h2>
+    <div style="line-height:2.1;font-size:15px;margin-top:18px">
+      <b>Top category:</b> Electronics<br>
+      <b>Top city:</b> Nagpur<br>
+      <b>Total revenue:</b> ₹3,202,994<br>
+      <b>Average order:</b> ₹26,692<br>
+      <b>Customer rating:</b> 3.75/5
+    </div>
+  </div>
+</section>
+</main>
+<div class="footer">Business KPI Dashboard • Built for Data Analytics Project • 2026</div>
+
+<script>
+const D = {"category": [{"name": "Electronics", "sales": 941496.21}, {"name": "Home & Kitchen", "sales": 687788.09}, {"name": "Clothing", "sales": 566986.74}, {"name": "Books", "sales": 553594.09}, {"name": "Sports", "sales": 453128.5}], "city": [{"name": "Nagpur", "sales": 866511.47}, {"name": "Pune", "sales": 705431.0}, {"name": "Mumbai", "sales": 580026.83}, {"name": "Nashik", "sales": 535520.47}, {"name": "Ahmednagar", "sales": 500903.32}], "monthly": [{"month": "2026-01", "sales": 665919.67}, {"month": "2026-02", "sales": 526396.46}, {"month": "2026-03", "sales": 441658.43}, {"month": "2026-04", "sales": 449029.76}, {"month": "2026-05", "sales": 553182.13}, {"month": "2026-06", "sales": 566807.18}]};
+const fmt = v => '₹' + Math.round(v).toLocaleString('en-IN');
+
+new Chart(document.getElementById('monthly'), {
+ type:'line',
+ data:{labels:D.monthly.map(x=>x.month),datasets:[{label:'Sales',data:D.monthly.map(x=>x.sales),tension:.3,fill:false}]},
+ options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)}}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}
+});
+
+new Chart(document.getElementById('category'), {
+ type:'doughnut',
+ data:{labels:D.category.map(x=>x.name),datasets:[{data:D.category.map(x=>x.sales)}]},
+ options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.label+': '+fmt(c.raw)}}}}
+});
+
+new Chart(document.getElementById('city'), {
+ type:'bar',
+ data:{labels:D.city.map(x=>x.name),datasets:[{label:'Sales',data:D.city.map(x=>x.sales)}]},
+ options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)}}},scales:{y:{ticks:{callback:v=>fmt(v)}}}}
+});
+</script>
+</body>
+</html>
